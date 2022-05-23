@@ -7,12 +7,10 @@ const minify = require('gulp-minify');
 var sourcemaps = require("gulp-sourcemaps");
 var buffer = require("vinyl-buffer");
 const { series, parallel } = require("gulp");
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const gulp_clean = require('gulp-clean');
 const gzip = require('gulp-gzip');
 const inlinesource = require('gulp-inline-source');
-
-sass.compiler = require('node-sass');
 
 var paths = {
     pages: ["src/*.html"],

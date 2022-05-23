@@ -1,7 +1,14 @@
-//const DATAURL = "http://192.168.1.223/wifimanager";
+//const DATAURL = "http://labathome-ebe548/wifimanager";
 const DATAURL = "wifimanager";
+//const DATAURL = "http://192.168.210.0/wifimanager";
 
 const gel = (e:string) => document.getElementById(e)!;
+const gqs = (e:string) => document.querySelector(e) as HTMLElement;
+const gqsa = (cssSelector:string, fn:(value: HTMLElement, key: number, parent: NodeListOf<HTMLElement>) => void) => (document.querySelectorAll(cssSelector) as NodeListOf<HTMLElement>).forEach(fn);
+const showScreen= (e:HTMLElement) => {
+  (document.querySelectorAll("#screens>article") as NodeListOf<HTMLElement>).forEach((e)=>e.style.display="none");
+  e.style.display = "block";
+}
 class $
 {
     public static readonly SVGNS = "http://www.w3.org/2000/svg";
@@ -47,16 +54,10 @@ class $
     }
 }
 
-enum ConnType{
-  MANUAL,
-  LIST,
-}
-
 const UNIT_SEPARATOR = '\x1F';
 const RECORD_SEPARATOR = '\x1E';
 const GROUP_SEPARATOR = '\x1D';
 const FILE_SEPARATOR = '\x1C';
-
 
 class AccessPoint{
   constructor(public ssid:string, public primaryChannel:number, public rssi:number, public authMode:number){}
@@ -69,15 +70,14 @@ class AccessPoint{
 
 class AppController {
 
-    private wifi_div = gel("wifi") as HTMLDivElement;
-    private connect_div = gel("connect")  as HTMLDivElement;
-    private connect_manual_div = gel("connect_manual") as HTMLDivElement;
-    private connect_wait_div = gel("connect-wait") as HTMLDivElement;
-    private connect_details_div = gel("connect-details") as HTMLDivElement;
-    private connect_success = gel("connect-success") as HTMLDivElement;
-    private connect_fail = gel("connect-fail") as HTMLDivElement;
-    private diag_disconnect = gel("diag-disconnect");
-    private connect_details_wrap = (gel("connect-details-wrap") as HTMLDivElement);
+    private screen_main = gel("main");
+    private screen_enter_password = gel("enter_password");
+    private screen_connect_wait = gel("connect_wait");
+    private screen_connection_details = gel("connection_details");
+    private screen_connect_success = gel("connection_success");
+    private screen_connect_failed = gel("connection_failed");
+    private diag_confirm_delete = gel("confirm_delete");
+    private screen_delete_success = gel("delete_success");
     private selectedSSID = "";
     private refreshDataInterval:any=null;
 
@@ -85,9 +85,7 @@ class AppController {
 
     private cancel() {
       this.selectedSSID = "";
-      this.connect_div.style.display = "none";
-      this.connect_manual_div.style.display = "none";
-      this.wifi_div.style.display = "block";
+      showScreen(this.screen_main);
     }
   
     private stopRefreshDataInterval() {
@@ -102,140 +100,60 @@ class AppController {
     }
 
     public startup() {
-        gel("wifi-status").addEventListener(
-            "click",
-            () => {
-              this.wifi_div.style.display = "none";
-              this.connect_details_div.style.display = "block";
-            },
-            false
-          );
-        
-          gel("manual_add").addEventListener(
-            "click",
-            (e) => {
-              this.wifi_div.style.display = "none";
-              this.connect_manual_div.style.display = "block";
-              this.connect_div.style.display = "none";
-              this.connect_success.style.display = "none";
-              this.connect_fail.style.display = "none";
-            },
-            false
-          );
-        
-          gel("cancel").addEventListener("click",()=>{this.cancel();}, false);
-
-          gel("manual_cancel").addEventListener("click", ()=>{this.cancel();}, false);
-        
-          gel("join").addEventListener("click", ()=>{this.performConnect(ConnType.LIST);}, false);
-        
-          gel("manual_join").addEventListener(
-            "click",
-            (e) => {
-              this.performConnect(ConnType.MANUAL);
-            },
-            false
-          );
-        
-          gel("ok-details").addEventListener(
-            "click",
-            () => {
-              this.connect_details_div.style.display = "none";
-              this.wifi_div.style.display = "block";
-            },
-            false
-          );
-        
-          gel("ok-credits").addEventListener(
-            "click",
-            () => {
-              (gel("credits") as HTMLDivElement).style.display = "none";
-              (gel("app") as HTMLDivElement).style.display = "block";
-            },
-            false
-          );
-        
-          gel("acredits").addEventListener(
-            "click",
-            (e) => {
-              e.preventDefault();
-              (gel("app") as HTMLDivElement).style.display = "none";
-              (gel("credits") as HTMLDivElement).style.display = "block";
-            },
-            false
-          );
-        
-          gel("ok-connect").addEventListener(
-            "click",
-            () => {
-              this.connect_wait_div.style.display = "none";
-              this.wifi_div.style.display = "block";
-            },
-            false
-          );
-        
-          gel("disconnect").addEventListener(
-            "click",
-            () => {
-              this.diag_disconnect.style.display = "block";
-              this.connect_details_wrap.classList.add("blur");
-            },
-            false
-          );
-        
-          gel("no-disconnect").addEventListener(
-            "click",
-            () => {
-              this.diag_disconnect.style.display = "none";
-              this.connect_details_wrap.classList.remove("blur");
-            },
-            false
-          );
-        
-          gel("yes-disconnect").addEventListener("click", () => {
-            this.stopRefreshDataInterval();
-            this.selectedSSID = "";
-        
-            this.diag_disconnect.style.display = "none";
-            this.connect_details_wrap.classList.remove("blur");
-        
-            fetch(DATAURL, {
-              method: "DELETE",
-            }).then(()=>{
-              this.startRefreshDataInterval();
-              this.connect_details_div.style.display = "none";
-              this.wifi_div.style.display = "block";
-            });
-          });
-
-          this.refreshData();
-          this.startRefreshDataInterval();
+      showScreen(this.screen_main);
+      gel("btnShowDetails").onclick=()=>showScreen(this.screen_connection_details);
+      let pwdPassword =(gel("pwdPassword") as HTMLInputElement);
+      gel("btnJoin").onclick=()=>this.performConnect(pwdPassword.value);
+      pwdPassword.onkeydown = (e)=>{
+        if(e.key=="Enter"){
+          this.performConnect(pwdPassword.value);
+        }
+      }
+      
+      (document.querySelectorAll("input[type='button'].cancel") as NodeListOf<HTMLButtonElement>).forEach((e)=>e.onclick=()=>this.cancel());
+      
+      gel("btnDisconnectFromMain").onclick=
+      gel("btnDisconnectFromDetails").onclick=
+      ()=>{
+        this.diag_confirm_delete.style.display="block";
+        this.screen_main.classList.add("blur");
+        this.screen_connection_details.classList.add("blur")
+      };
+      
+      gel("no-disconnect").onclick=() => {
+        this.diag_confirm_delete.style.display = "none";
+        this.screen_main.classList.remove("blur");
+        this.screen_connection_details.classList.remove("blur");
+      };
+      
+      gel("yes-disconnect").onclick=() => {
+        this.stopRefreshDataInterval();
+        this.selectedSSID = "";
+    
+        this.diag_confirm_delete.style.display = "none";
+        this.screen_main.classList.remove("blur");
+        this.screen_connection_details.classList.remove("blur");
+    
+        fetch(DATAURL, {
+          method: "DELETE",
+        }).then((response)=>{
+          if(!response.ok){
+            console.log(response.statusText);
+          }
+          showScreen(this.screen_delete_success);
+        })
+      };
+      this.refreshData();
+      this.startRefreshDataInterval();
     }
 
-    private performConnect(conntype:ConnType) {
+    private performConnect(password:string) {
       //stop the status refresh. This prevents a race condition where a status
       //request would be refreshed with wrong ip info from a previous connection
       //and the request would automatically shows as succesful.
       this.stopRefreshDataInterval();
-      let pwd:string="";
-      if (conntype == ConnType.MANUAL) {
-        //Grab the manual SSID and PWD
-        this.selectedSSID = (gel("manual_ssid") as HTMLInputElement).value;
-        pwd = (gel("manual_pwd") as HTMLInputElement).value;
-      } else {
-        pwd = (gel("pwd") as HTMLInputElement).value;
-      }
-      //reset connection
-      (gel("loading") as HTMLDivElement).style.display = "block";
-      this.connect_success.style.display = "none";
-      this.connect_fail.style.display = "none";
-    
-      (gel("ok-connect") as HTMLInputElement).disabled = true;
-      (gel("ssid-wait") as HTMLSpanElement).textContent = this.selectedSSID;
-      this.connect_div.style.display = "none";
-      this.connect_manual_div.style.display = "none";
-      this.connect_wait_div.style.display = "block";
-      let content=`${this.selectedSSID}`+UNIT_SEPARATOR+`${pwd}`+UNIT_SEPARATOR+RECORD_SEPARATOR;
+      showScreen(this.screen_connect_wait);
+      let content=`${this.selectedSSID}`+UNIT_SEPARATOR+`${password}`+UNIT_SEPARATOR+RECORD_SEPARATOR;
       console.log("Sending connect request with "+content)
       fetch(DATAURL, {
         method: "POST",
@@ -244,69 +162,66 @@ class AppController {
         },
         body: content,
       });
-      //now we can re-set the intervals regardless of result
       this.startRefreshDataInterval();
     }
 
     public processStatusString(statusString:string){
       let items = statusString.split(UNIT_SEPARATOR);
-      let ssid = items[0];
-      let ip=items[1];
-      let netmask=items[2];
-      let gw=items[3];
-      let urc=parseInt(items[4]);
-      if(ssid==""){
-        if(urc==2){
-          console.log("Manual disconnect requested...");
-          (gel("wifi-status") as HTMLDivElement).style.display = "none";
-        }
-      }else if(ssid==this.selectedSSID){
-        (gel("connected-to-span") as HTMLSpanElement).textContent = ssid;
-        (gel("connect-details-h1") as HTMLHeadElement).textContent = ssid;
-        if(urc==0){
+      let ssid_ap=items[0];
+      let hostname= items[1]
+      let ssid = items[2];
+      let rssi = parseInt(items[3]);
+      let ip=items[4];
+      let netmask=items[5];
+      let gw=items[6];
+      let urc=parseInt(items[7]);
+      if(ssid!=""){
+        gqsa(".current_hostname",(e)=>e.textContent = hostname);
+        gqsa(".current_rssi", (e)=>e.textContent = rssi+"dB");
+        (gel("btnDisconnectFromMain") as HTMLInputElement).disabled=
+        (gel("btnDisconnectFromDetails")as HTMLInputElement).disabled=false;
+        gqsa(".link2site", (e)=>{
+          (e as HTMLAnchorElement).href = `http://${hostname}`;
+          (e as HTMLAnchorElement).textContent = `http://${hostname}`;
+        });
+      }else{
+        gqsa(".current_hostname",(e)=>e.textContent = "");
+        gqsa(".current_rssi", (e)=>e.textContent = "");
+        (gel("btnDisconnectFromMain") as HTMLInputElement).disabled=
+        (gel("btnDisconnectFromDetails")as HTMLInputElement).disabled=true;
+      }
+      gqsa(".current_ssid_ap", (e)=>e.textContent=ssid_ap);
+      gqsa(".current_ssid", (e)=>e.textContent=ssid);
+      gqsa(".current_ip", (e)=>e.textContent = ip);
+      gqsa(".current_netmask", (e)=>e.textContent = netmask);
+      gqsa(".current_gw", (e)=>e.textContent = gw);
+
+      switch(urc){
+        case 0:
+          break;
+        case 1:
           console.info("Got connection!");
-
-          (gel("ip") as HTMLDivElement).textContent = ip;
-          (gel("netmask") as HTMLDivElement).textContent = netmask;
-          (gel("gw") as HTMLDivElement).textContent = gw;
-          (gel("wifi-status") as HTMLDivElement).style.display = "block";
-
-          //unlock the wait screen if needed
-          (gel("ok-connect")as HTMLInputElement).disabled = false;
-
-          //update wait screen
-          (gel("loading") as HTMLDivElement).style.display = "none";
-          this.connect_success.style.display = "block";
-          this.connect_fail.style.display = "none";
-        }
-        else{
+          showScreen(this.screen_connect_success);
+          break;
+        case 2:
           console.info("Connection attempt failed!");
-
-          (gel("ip") as HTMLDivElement).textContent = "0.0.0.0";
-          (gel("netmask") as HTMLDivElement).textContent = "0.0.0.0";
-          (gel("gw") as HTMLDivElement).textContent = "0.0.0.0";
-
-          //don't show any connection
-          (gel("wifi-status") as HTMLDivElement).style.display = "none";
-
-          //unlock the wait screen
-          (gel("ok-connect") as HTMLInputElement).disabled = false;
-
-          //update wait screen
-          (gel("loading") as HTMLDivElement).style.display = "none";
-          this.connect_success.style.display = "none";
-          this.connect_fail.style.display = "block";
-        }
-      }else{//ssid!="" && ssid!=this.selectedSSID
-        (gel("connected-to-span") as HTMLSpanElement).textContent = ssid;
-        (gel("connect-details-h1") as HTMLElement).textContent = ssid;
-        (gel("ip") as HTMLDivElement).textContent = ip;
-        (gel("netmask") as HTMLDivElement).textContent = netmask;
-        (gel("gw") as HTMLDivElement).textContent = gw;
-        (gel("wifi-status") as HTMLDivElement).style.display = "block";
+          showScreen(this.screen_connect_failed);
+          break;
+        case 3:
+          console.log("Manual disconnect requested...");
+          showScreen(this.screen_main);
+          break;
+        case 4:
+          showScreen(this.screen_main);
+          break;
       }
     }
 
+    private newSSIDSelected(ssid:string){
+      this.selectedSSID=ssid;
+      document.querySelectorAll(".ssid_to_connect_to").forEach(e=>e.textContent=ssid);
+      showScreen(this.screen_enter_password);
+    }
 
     public processAccessPointsStrings(apStrings:string[]){
 
@@ -330,11 +245,12 @@ class AppController {
         var y = b.rssi;
         return x < y ? 1 : x > y ? -1 : 0;
       });
-      let wifiList = gel("wifi-list") as HTMLElement;
-      wifiList.textContent="";
+      let table = gel("wifi-list") as HTMLElement;
+      table.textContent="";
+      
+      (gel("btnManualConnect") as HTMLInputElement).onclick=(e)=>this.newSSIDSelected((gel("inpManualConnect") as HTMLInputElement).value);
       const icon_lock_template = document.getElementById("icon-lock") as HTMLTemplateElement;
       const icon_rssi_template = document.getElementById("icon-wifi") as HTMLTemplateElement;
-      let table = $.Html(wifiList, "table");
       access_points_list.forEach((e, idx, array)=>{
         let tr= $.Html(table, "tr");
         let td_rssi = $.Html(tr, "td");
@@ -344,17 +260,12 @@ class AppController {
         if(e.authMode!= 0){
           td_auth.appendChild(document.importNode(icon_lock_template.content, true));
         }
-        let rssiIcon= td_rssi.children[0].children[0];
+        let rssiIcon= td_rssi.children[0];
         (rssiIcon.children[0] as SVGPathElement).style.fill= e.rssi>=-60?"black":"grey";
         (rssiIcon.children[1] as SVGPathElement).style.fill= e.rssi>=-67?"black":"grey";
         (rssiIcon.children[2] as SVGPathElement).style.fill= e.rssi>=-75?"black":"grey";
         $.Html(tr, "td", [], [], `${e.ssid} [${e.rssi}dB]`);
-        tr.onclick=()=>{
-          this.selectedSSID=e.ssid;
-          (gel("ssid-pwd") as HTMLSpanElement).textContent = e.ssid;
-          this.connect_div.style.display = "block";
-          this.wifi_div.style.display = "none";
-        };
+        tr.onclick=()=>this.newSSIDSelected(e.ssid);
       }); 
     }
 
@@ -366,11 +277,14 @@ class AppController {
           "Content-Type": "text/plain",
         },
         body: "",
-
       })
       .then((response)=>response.text()
       )
       .then((txt)=>{
+        if(txt.length==0){
+          console.error("Received an empty string from server");
+          return;
+        }
         let items = txt.split(RECORD_SEPARATOR).filter(r => r !== "");
         this.processStatusString(items[0]);
         this.processAccessPointsStrings(items.slice(1));

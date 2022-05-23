@@ -14,154 +14,135 @@
 
 <body>
   <template id="icon-wifi">
-    <figure class="icon-wifi">
-    <svg width="24" height="24" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <path d="M1,9L3,11C7.97,6.03 16.03,6.03 21,11L23,9C16.93,2.93 7.08,2.93 1,9Z" />
-      <path d="M5,13L7,15C9.76,12.24 14.24,12.24 17,15L19,13C15.14,9.14 8.87,9.14 5,13Z" />
-      <path d="M9,17L12,20L15,17C13.35,15.34 10.66,15.34 9,17Z" />
-      </svg></figure>
+      <svg width="24" height="24" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M1,9L3,11C7.97,6.03 16.03,6.03 21,11L23,9C16.93,2.93 7.08,2.93 1,9Z" />
+        <path d="M5,13L7,15C9.76,12.24 14.24,12.24 17,15L19,13C15.14,9.14 8.87,9.14 5,13Z" />
+        <path d="M9,17L12,20L15,17C13.35,15.34 10.66,15.34 9,17Z" />
+      </svg>
   </template>
   <template id="icon-lock">
-    <figure class="icon-lock">
-    <svg width="24" height="24" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <path style="fill: black;" d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"></path>
-      </svg></figure>
+      <svg width="24" height="24" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path style="fill: black;"
+          d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z">
+        </path>
+      </svg>
   </template>
-  <div id="app">
-    <div id="app-wrap">
-      <div id="wifi">
-        <header>
-          <h1>Wi-Fi</h1>
-        </header>
-        <div id="wifi-status">
-          <h2>Connected to:</h2>
-          <section id="connected-to">
-            <div class="ape">
-              <div class="w0">
-                <div class="pw"><span id="connected-to-span"></span></div>
-              </div>
-            </div>
-          </section>
-        </div>
-        <h2>Manual connect</h2>
-        <section id="manual_add">
-          <div class="ape">ADD (HIDDEN) SSID<div>
-        </section>
-        <h2>or choose a network...</h2>
-        <section id="wifi-list"></section>
-        <div id="pwrdby"><em>Powered by </em><a id="acredits" href="#"><strong>esp32-wifi-manager</strong></a>.
-        </div>
+  <div id="screens">
+    <article id="main">
+      <h1>Current Connection</h1>
+      <table>
+        <tr>
+          <td>Hostname</td>
+          <td class="current_hostname"></td>
+        </tr>
+        <tr>
+          <td>Network SSID</td>
+          <td class="current_ssid"></td>
+        </tr>
+        <tr>
+          <td>Signal Strength</td>
+          <td class="current_rssi"></td>
+        </tr>
+      </table>
+      <div class="buttons">
+        <input id="btnDisconnectFromMain" type="button" value="Disconnect" />
+        <input id="btnShowDetails" type="button" value="Show Details"/>
       </div>
-      <div id="connect_manual">
-        <header>
-          <h1>Enter Details</h1>
-        </header>
-        <h2>Manual Connection</span></h2>
-        <section>
-          <input id="manual_ssid" type="text" placeholder="SSID" value="">
-          <input id="manual_pwd" type="password" placeholder="Password" value="">
-        </section>
+      <h1>Setup New Connection</h1>
+      <h2>Manual</h2>
+      <div class="buttons">
+        <input type="text" placeholder="Enter SSID here!" id="inpManualConnect" />
+        <input type="button" value="Connect" id="btnManualConnect" />
+      </div>
+      <h2>Select in List</h2>
+      <table id="wifi-list"></table>
+    </article>
+    <article id="enter_password">
+      <h1>Enter Password for <span class="ssid_to_connect_to">%&%&%</span></h1>
+      <input id="pwdPassword" type="password" placeholder="Password" />
+      <div class="buttons">
+        <input class="cancel" type="button" value="Cancel" />
+        <input id="btnJoin" type="button" value="Join"/>
+      </div>
+    </article>
+    <article id="connection_success">
+      <h1 class="gr">Connection was successful.</h1>
+      <p>Connect your laptop/tablet/smartphone to wifi "<span class="current_ssid">%%%%</span>" and open <a class="link2site">%%%%</a></p>
+      <table>
+        <tr>
+          <td>Hostname</td>
+          <td class="current_hostname"></td>
+        </tr>
+        <tr>
+          <td>Network SSID</td>
+          <td class="current_ssid"></td>
+        </tr>
+        <tr>
+          <td>Signal Strength</td>
+          <td class="current_rssi"></td>
+        </tr>
+      </table>
+    </article>
+    <article id="connection_failed">
+      <h1 class="rd">Connection failed</h1>
+      <p>Please double-check wifi password if any and make sure the access point has good signal.</p>
+    </article>
+    <article id="connect_wait">
+      <h1 style="text-align: center;">Connecting to <span class="ssid_to_connect_to"></span></h1>
+      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+      <p style="text-align: center;">You may lose wifi access while the esp32 recalibrates its radio. Please wait until your device automatically reconnects. This can take up to 30s.</p>
+      <div class="buttons" style="justify-content: center; ">
+        <input type="button" value="Cancel" class="ctr cancel" />
+      </div>
+    </article>
+    <article id="delete_success">
+      <h1 class="gr">Delete Success</h1>
+      <p>Deletion has been successfully completed. Please connect to the devices access point (ssid is <span class="current_ssid_ap">%%%%</span>). </p>
+    </article>
+    
+    <article id="connection_details">
+      <h1>Connection Details</h1>
+      <table>
+        <tr>
+          <td>Hostname</td>
+          <td class="current_hostname"></td>
+        </tr>
+        <tr>
+          <td>Network SSID</td>
+          <td class="current_ssid"></td>
+        </tr>
+        <tr>
+          <td>Signal Strength</td>
+          <td class="current_rssi"></td>
+        </tr>
+        <tr>
+          <td>IP Address</td>
+          <td class="current_ip"></td>
+        </tr>
+        <tr>
+          <td>Netmask</td>
+          <td class="current_netmask"></td>
+        </tr>
+        <tr>
+          <td>Gateway</td>
+          <td class="current_gw"></td>
+        </tr>
+      </table>
+      <div class="buttons">
+        <input id="btnDisconnectFromDetails" type="button" value="Disconnect" />
+        <input class="cancel" type="button" value="Close Details" />
+      </div>
+    </article>
+    <article id="confirm_delete">
+      <div class="diag-box-win">
+        <p>Are you sure you would like to disconnect from <span class="current_ssid"></span></p>
         <div class="buttons">
-          <input id="manual_join" type="button" value="Join" data-connect="manual" />
-          <input id="manual_cancel" type="button" value="Cancel" />
+          <input id="no-disconnect" type="button" value="No" />
+          <input id="yes-disconnect" type="button" value="Yes" />
         </div>
       </div>
-      <div id="connect">
-        <header>
-          <h1>Enter Password</h1>
-        </header>
-        <h2>Password for <span id="ssid-pwd"></span></h2>
-        <section>
-          <input id="pwd" type="password" placeholder="Password" value="">
-        </section>
-        <div class="buttons">
-          <input id="join" type="button" value="Join" />
-          <input id="cancel" type="button" value="Cancel" />
-        </div>
-      </div>
-      <div id="connect-wait">
-        <header>
-          <h1>Please wait...</h1>
-        </header>
-        <h2>Connecting to <span id="ssid-wait"></span></h2>
-        <section>
-          <div id="loading">
-            <div class="spinner">
-              <div class="double-bounce1"></div>
-              <div class="double-bounce2"></div>
-            </div>
-            <p class="tctr">You may lose wifi access while the esp32 recalibrates its radio. Please wait
-              until your device automatically reconnects. This can take up to 30s.</p>
-          </div>
-          <div id="connect-success">
-            <h3 class="gr">Success!</h3>
-          </div>
-          <div id="connect-fail">
-            <h3 class="rd">Connection failed</h3>
-            <p class="tctr">Please double-check wifi password if any and make sure the access point has good
-              signal.</p>
-          </div>
-        </section>
-        <div class="buttons">
-          <input id="ok-connect" type="button" value="OK" class="ctr" />
-        </div>
-      </div>
-      <div id="connect-details">
-        <div id="connect-details-wrap">
-          <header>
-            <h1 id="connect-details-h1"></h1>
-          </header>
-          <h2></h2>
-          <section>
-            <div class="buttons">
-              <input id="disconnect" type="button" value="Disconnect" class="ctr" />
-            </div>
-          </section>
-          <h2>IP Address</h2>
-          <section>
-            <div class="ape brdb">IP Address:<div id="ip" class="fr"></div>
-            </div>
-            <div class="ape brdb">Subnet Mask:<div id="netmask" class="fr"></div>
-            </div>
-            <div class="ape">Default Gateway:<div id="gw" class="fr"></div>
-            </div>
-          </section>
-          <div class="buttons">
-            <input id="ok-details" type="button" value="OK" class="ctr" />
-          </div>
-        </div>
-        <div id="diag-disconnect" class="diag-box">
-          <div class="diag-box-win">
-            <p>Are you sure you would like to disconnect from this wifi?</p>
-            <div class="buttons">
-              <input id="no-disconnect" type="button" value="No" />
-              <input id="yes-disconnect" type="button" value="Yes" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div id="credits">
-    <header>
-      <h1>About this app...</h1>
-    </header>
-    <h2></h2>
-    <section>
-      <p><strong>esp32-wifi-manager</strong>, &copy; 2017-2020, Tony Pottier<br />Licended under the MIT License.
-      </p>
-      <p>
-        This app would not be possible without the following libraries:
-      </p>
-      <ul>
-        <li>SpinKit, &copy; 2015, Tobias Ahlin. Licensed under the MIT License.</li>
-        <li>jQuery, The jQuery Foundation. Licensed under the MIT License.</li>
-        <li>cJSON, &copy; 2009-2017, Dave Gamble and cJSON contributors. Licensed under the MIT License.</li>
-      </ul>
-    </section>
-    <div class="buttons">
-      <input id="ok-credits" type="button" value="OK" class="ctr" />
-    </div>
+    </article>
+
   </div>
 </body>
 

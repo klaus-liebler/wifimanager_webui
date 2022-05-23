@@ -1,9 +1,13 @@
 body {
   background-color: #eee;
-  border: 0;
-  margin: 0;
+  font: 1.1em tahoma, arial, sans-serif;
+  box-sizing: border-box;
+}
+
+input{
   font: 1.1em tahoma, arial, sans-serif;
 }
+
 a {
   color: darkblue;
   transition: color .2s ease-out;
@@ -12,31 +16,55 @@ a {
 a:hover {
   color: red;
 }
-input {
-  display: none;
-  font: 1.1em tahoma, arial, sans-serif;
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 25px 0;
+  min-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
-input:focus,
-select:focus,
-textarea:focus,
-button:focus {
-  outline: none;
+
+td, th {
+  border-top: 1px solid #555555;
+  border-bottom: 1px solid #555555;
+  text-align: left;
+  padding: 8px;
 }
-input[type="button"] {
-  width: 100px;
-  padding: 5px;
-  text-align: center;
-  display: block;
+
+tr:nth-child(odd) {
+  background-color: #dddddd;
 }
+tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+#wifi-list tr:hover{
+  background-color: #ccffff;
+  cursor: pointer;
+}
+
+#wifi-list td:nth-child(1){
+  width: 34px;
+}
+
+#wifi-list td:nth-child(2){
+  width: 34px;
+}
+
+td>figure{
+  margin: 0px;
+  margin-block-start: 0px;
+    margin-block-end: 0px;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px
+}
+
 p {
   padding: 10px;
 }
-#credits {
-  display: none;
-}
-#disconnect {
-  width: 150px;
-}
+
+
 .diag-box {
   position: absolute;
   top: 0;
@@ -56,168 +84,60 @@ p {
   background-color: #fff;
   border-radius: 10px;
   top: 20%;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 .blur {
   filter: blur(2px);
 }
-.ape {
-  margin-left: 20px;
-  padding: 10px 0px 10px 10px;
-}
-.ape:hover {
-  cursor: pointer;
-}
-.brdb {
-  border-bottom: 1px solid #888;
-}
-header {
-  background-color: #fff;
-  border-bottom: 1px solid #888;
-}
-section {
-  background-color: #fff;
-  border-bottom: 1px solid #888;
-  border-top: 1px solid #888;
-}
-h1 {
-  display: block;
-  text-align: center;
-  margin: 0;
-  padding: 15px;
-  font-size: 1.4em
-}
-h2 {
-  margin: 0;
-  margin-top: 20px;
-  padding: 10px;
-  text-transform: uppercase;
-  color: #888;
-  font-size: 1.0em
-}
-h3 {
-  margin: 0;
-  text-align: center;
-  padding: 20px 0px 20px 0px;
-}
+
 .gr {
   color: green;
 }
 .rd {
   color: red;
 }
-#wifi-status {
-  display: none;
-}
-#connect {
-  display: none;
-}
-#connect_manual {
-  display: none;
-}
-#manual_ssid {
-  border: none;
-  width: 80%;
-  margin-left: 35px;
-  padding: 10px 0px 10px 10px;
-  display: block
-}
-#manual_pwd {
-  border: none;
-  width: 80%;
-  margin-left: 35px;
-  padding: 10px 0px 10px 10px;
-  display: block
-}
-#pwd {
-  border: none;
-  width: 80%;
-  margin-left: 35px;
-  padding: 10px 0px 10px 10px;
-  display: block
-}
-.buttons {
-  padding: 15px;
-}
-#join {
-  float: right;
-}
-#manual_join {
-  float: right;
-}
-#yes-disconnect {
-  display: inline-block;
-  margin-left: 20px;
-}
-#no-disconnect {
-  display: inline-block;
-}
-.ctr {
-  margin: 0 auto;
-}
-.tctr {
-  text-align: center;
-}
-#connect-wait {
-  display: none;
-}
-#connect-success {
-  display: none;
-}
-#connect-fail {
-  display: none;
-}
-#connect-details {
-  display: none;
-}
-.fr {
-  float: right;
-  margin-right: 20px;
-}
-use {
-  height: 24px;
-  margin-right: 20px;
-}
-/* SpinKit is licensed under the MIT License. Copyright (c) 2015 Tobias Ahlin */
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  position: relative;
-  margin: 100px auto;
+.buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
-.double-bounce1,
-.double-bounce2 {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background-color: #333;
-  opacity: 0.6;
+
+.lds-ring {
+  display: block;
+  width: 80px;
+  height: 80px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
   position: absolute;
-  top: 0;
-  left: 0;
-  -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
-  animation: sk-bounce 2.0s infinite ease-in-out;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid #fcf;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fcf transparent transparent transparent;
 }
-.double-bounce2 {
-  -webkit-animation-delay: -1.0s;
-  animation-delay: -1.0s;
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
 }
-@-webkit-keyframes sk-bounce {
-  0%, 100% {
-      -webkit-transform: scale(0.0)
-  }
-  50% {
-      -webkit-transform: scale(1.0)
-  }
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
 }
-@keyframes sk-bounce {
-  0%, 100% {
-      transform: scale(0.0);
-      -webkit-transform: scale(0.0);
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
   }
-  50% {
-      transform: scale(1.0);
-      -webkit-transform: scale(1.0);
+  100% {
+    transform: rotate(360deg);
   }
 }
-/* end of SpinKit */
